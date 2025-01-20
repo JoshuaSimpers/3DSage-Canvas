@@ -98,6 +98,7 @@ function drawRays()
     let ra;
     let xo;
     let yo;
+    let disT;
     ra = pa - DR*30;
     if (ra < 0)
     {
@@ -202,17 +203,47 @@ function drawRays()
         {
             rx = vx;
             ry = vy;
+            disT = disV;
+            context.strokeStyle = "#E40400";
         }
         if (disH < disV)
         {
             rx = hx;
             ry = hy;
+            disT = disH;
+            context.strokeStyle = "#B20300";
+        }
+        else
+        {
+            context.strokeStyle = "red";
         }
 
         context.beginPath();
         context.moveTo(px + 4, py + 4);
         context.lineTo(rx, ry);
-        context.strokeStyle = "red";
+        context.stroke();
+        context.closePath();
+
+        let ca = pa - ra;
+        if (ca < 0)
+        {
+            ca += 2*Math.PI;
+        }
+        if (ca > 2*Math.PI)
+        {
+            ca -= 2*Math.PI;
+        }
+        disT = disT * Math.cos(ca);
+        let lineH = (mapS * 320) / disT;
+        let lineO = 160 - lineH / 2;
+        if (lineH > 320)
+        {
+            lineH = 320;
+        }
+        context.beginPath();
+        context.lineWidth = 8;
+        context.moveTo(r*8 + 530, lineO);
+        context.lineTo(r*8 + 530, lineH + lineO);
         context.stroke();
         context.closePath();
 
