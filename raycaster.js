@@ -9,6 +9,8 @@ let pdy = Math.sin(pa) * 5;
 let mapX = 8;
 let mapY = 8;
 let mapS = 64;
+let PI2 = Math.PI / 2;
+let PI3 = 3*(Math.PI / 2);
 
 let map = 
 [
@@ -78,12 +80,122 @@ function drawMap2D()
     }
 }
 
+function drawRays()
+{
+    let r;
+    let mx;
+    let my;
+    let mp;
+    let dof;
+    let rx;
+    let ry;
+    let ra;
+    let xo;
+    let yo;
+    ra = pa;
+    for (r = 0; r < 1; r++)
+    {
+        dof = 0;
+        let aTan = -1/Math.tan(ra);
+        if (ra > Math.PI)
+        {
+            ry = ((py>>6)<<6)-0.0001;
+            rx = (py-ry)*aTan + px;
+            yo=-64;
+            xo=-yo*aTan;
+        }
+        if (ra < Math.PI)
+        {
+            ry = ((py>>6)<<6)+64;
+            rx = (py-ry)*aTan + px;
+            yo=64;
+            xo=-yo*aTan;
+        }
+        if (ra == 0 || ra == Math.PI)
+        {
+            rx = px;
+            ry = py;
+            dof = 8;
+        }
+        while(dof<8)
+        {
+            mx = rx >> 6;
+            my = ry >> 6;
+            mp = my * mapX + mx;
+            if (mp < mapX * mapY && map[mp] == 1)
+            {
+                dof = 8;
+            }
+            else
+            {
+                rx += xo;
+                ry += yo;
+                dof++;
+            }
+        }
+        context.beginPath();
+        context.moveTo(px + 4, py + 4);
+        context.lineTo(rx, ry);
+        context.strokeStyle = "green";
+        context.lineWidth = 10;
+        context.stroke();
+        context.closePath();
+
+        dof = 0;
+        let nTan = -Math.tan(ra);
+        if (ra > PI2 && ra < PI3)
+        {
+            rx = ((px>>6)<<6)-0.0001;
+            ry = (px-rx)*nTan + py;
+            xo=-64;
+            yo=-xo*nTan;
+        }
+        if (ra < PI2 || ra > PI3)
+        {
+            rx = ((px>>6)<<6)+64;
+            ry = (px-rx)*nTan + py;
+            xo=64;
+            yo=-xo*nTan;
+        }
+        if (ra == 0 || ra == Math.PI)
+        {
+            rx = px;
+            ry = py;
+            dof = 8;
+        }
+        while(dof<8)
+        {
+            mx = rx >> 6;
+            my = ry >> 6;
+            mp = my * mapX + mx;
+            if (mp < mapX * mapY && map[mp] == 1)
+            {
+                dof = 8;
+            }
+            else
+            {
+                rx += xo;
+                ry += yo;
+                dof++;
+            }
+        }
+        context.beginPath();
+        context.moveTo(px + 4, py + 4);
+        context.lineTo(rx, ry);
+        context.strokeStyle = "red";
+        context.lineWidth = 3;
+        context.stroke();
+        context.closePath();
+    }
+}
+
 function drawEverything()
 {
     clearScreen();
     drawMap2D();
     drawPlayer();
     drawPlayerDirection();
+    drawRays();
 }
 
 document.addEventListener("keydown", keyDownHandler, false);
