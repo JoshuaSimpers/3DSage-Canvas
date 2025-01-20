@@ -3,6 +3,21 @@ const context = canvas.getContext("2d");
 
 let px = 300;
 let py = 300;
+let mapX = 8;
+let mapY = 8;
+let mapS = 64;
+
+let map = 
+[
+    1,1,1,1,1,1,1,1,
+    1,0,1,0,0,0,0,1,
+    1,0,1,0,0,0,0,1,
+    1,0,1,0,0,0,0,1,
+    1,0,0,0,0,0,0,1,
+    1,0,0,0,0,1,0,1,
+    1,0,0,0,0,0,0,1,
+    1,1,1,1,1,1,1,1
+]; 
 
 function clearScreen()
 {
@@ -19,9 +34,41 @@ function drawPlayer()
     context.closePath();
 }
 
+function drawMap2D()
+{
+    let x;
+    let y;
+    let xo;
+    let yo;
+    for (y=0; y<mapY; y++)
+    {
+        for (x=0; x<mapX; x++)
+        {
+            if (map[y*mapX+x]==1)
+            {
+                context.fillStyle = "white";
+            }
+            else
+            {
+                context.fillStyle = "black";
+            }
+            xo = x*mapS;
+            yo = y*mapS;
+            context.beginPath();
+            context.moveTo(xo, yo);
+            context.lineTo(xo, yo+mapS);
+            context.lineTo(xo+mapS, yo+mapS);
+            context.lineTo(xo+mapS, yo);
+            context.fill();
+            context.closePath();
+        }
+    }
+}
+
 function drawEverything()
 {
     clearScreen();
+    drawMap2D();
     drawPlayer();
 }
 
