@@ -98,8 +98,16 @@ function drawRays()
     let ra;
     let xo;
     let yo;
-    ra = pa;
-    for (r = 0; r < 1; r++)
+    ra = pa - DR*30;
+    if (ra < 0)
+    {
+        ra += 2*Math.PI;
+    }
+    if (ra > 2*Math.PI)
+    {
+        ra -= 2*Math.PI;
+    }
+    for (r = 0; r < 60; r++)
     {
         dof = 0;
         let disH = 1000000;
@@ -207,6 +215,16 @@ function drawRays()
         context.strokeStyle = "red";
         context.stroke();
         context.closePath();
+
+        ra += DR;
+        if (ra < 0)
+        {
+            ra += 2*Math.PI;
+        }
+        if (ra > 2*Math.PI)
+        {
+            ra -= 2*Math.PI;
+        }
     }
 }
 
