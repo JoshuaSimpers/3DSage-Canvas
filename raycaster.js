@@ -11,6 +11,7 @@ let mapY = 8;
 let mapS = 64;
 let PI2 = Math.PI / 2;
 let PI3 = 3*(Math.PI / 2);
+let DR = 0.0174533;
 
 let map = 
 [
@@ -28,6 +29,11 @@ function clearScreen()
 {
     //clears the screen
     context.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+function dist(ax, ay, bx, by, ang)
+{
+    return Math.sqrt((bx - ax) * (bx - ax) + (by - ay) * (by - ay));
 }
 
 function drawPlayer()
@@ -96,6 +102,9 @@ function drawRays()
     for (r = 0; r < 1; r++)
     {
         dof = 0;
+        let disH = 1000000;
+        hx = px;
+        hy = py;
         let aTan = -1/Math.tan(ra);
         if (ra > Math.PI)
         {
@@ -122,8 +131,11 @@ function drawRays()
             mx = rx >> 6;
             my = ry >> 6;
             mp = my * mapX + mx;
-            if (mp < mapX * mapY && map[mp] == 1)
+            if (mp > 0 && mp < mapX * mapY && map[mp] == 1)
             {
+                hx = rx;
+                hy = ry;
+                disH = dist(px, py, hx, hy, ra);
                 dof = 8;
             }
             else
@@ -133,15 +145,11 @@ function drawRays()
                 dof++;
             }
         }
-        context.beginPath();
-        context.moveTo(px + 4, py + 4);
-        context.lineTo(rx, ry);
-        context.strokeStyle = "green";
-        context.lineWidth = 10;
-        context.stroke();
-        context.closePath();
 
         dof = 0;
+        let disV = 1000000;
+        let vx = px;
+        let vy = py;
         let nTan = -Math.tan(ra);
         if (ra > PI2 && ra < PI3)
         {
@@ -168,8 +176,11 @@ function drawRays()
             mx = rx >> 6;
             my = ry >> 6;
             mp = my * mapX + mx;
-            if (mp < mapX * mapY && map[mp] == 1)
+            if (mp > 0 && mp < mapX * mapY && map[mp] == 1)
             {
+                vx = rx;
+                vy = ry;
+                disV = dist(px, py, vx, vy, ra);
                 dof = 8;
             }
             else
@@ -179,11 +190,21 @@ function drawRays()
                 dof++;
             }
         }
+        if (disV < disH)
+        {
+            rx = vx;
+            ry = vy;
+        }
+        if (disH < disV)
+        {
+            rx = hx;
+            ry = hy;
+        }
+
         context.beginPath();
         context.moveTo(px + 4, py + 4);
         context.lineTo(rx, ry);
         context.strokeStyle = "red";
-        context.lineWidth = 3;
         context.stroke();
         context.closePath();
     }
